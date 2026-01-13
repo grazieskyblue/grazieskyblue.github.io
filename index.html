@@ -3,110 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAINS - 고려대학교 스포츠 통계분석 동아리</title>
+    <title>나의 홈페이지</title>
     <style>
-        /* 기본 설정 */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; line-height: 1.6; color: #333; }
-        
-        /* 헤더(메뉴) */
-        header { background-color: #cf8b8b; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { font-size: 1.5rem; font-weight: bold; }
-        
-        /* 네비게이션 링크 스타일 */
-        nav { display: flex; align-items: center; }
-        nav a { color: #ecf0f1; text-decoration: none; margin-left: 15px; font-size: 0.9rem; transition: color 0.3s; }
-        nav a:hover { color: #fff; font-weight: bold; }
+        /* [스타일 설정: 대구FC 스타일 하늘색 테마] */
+        :root {
+            /* 대구FC 유니폼 느낌의 시원한 하늘색 */
+            --primary-color: #0087D1; 
+            /* 호버(마우스 올렸을 때) 효과를 위한 조금 더 진한 파란색 */
+            --primary-dark: #006096;
+            --text-color: #333333;
+            --bg-color: #f4f9fc; /* 아주 연한 하늘색 배경 */
+            --white: #ffffff;
+        }
 
-        /* 지원하기 버튼 스타일 */
-        .apply-btn {
-            background-color: white;
-            color: #ab3333 !important;
-            padding: 8px 16px;
-            border-radius: 20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+        /* 1. 헤더 & 네비게이션 */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
             font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        .apply-btn:hover { background-color: #f0f0f0; transform: scale(1.05); }
-
-        /* 메인 배너 영역 */
-        .hero { background-color: #ab3333; color: white; text-align: center; padding: 4rem 1rem; }
-        
-        /* 메인 이미지 스타일 (그림자 제거됨) */
-        .hero-image {
-            max-width: 80%;
-            width: 400px;
-            height: auto;
-            margin-bottom: 20px;
-            border-radius: 12px; /* 모서리 둥근 효과는 유지 (원치 않으면 이 줄도 삭제) */
+            text-decoration: none;
+            color: var(--white);
         }
 
-        .hero p { font-size: 1.2rem; opacity: 0.9; }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
 
-        /* 공통 섹션 스타일 */
-        section { padding: 3rem 2rem; max-width: 1000px; margin: 0 auto; }
-        h3 { font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
 
-        /* 활동 소개 카드 스타일 */
-        .activities { display: flex; gap: 20px; flex-wrap: wrap; }
-        .card { flex: 1; background: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); min-width: 250px; }
-        .card h4 { color: #ab3333; margin-bottom: 10px; font-size: 1.2rem; }
+        nav a:hover {
+            color: #dbeeff; /* 마우스 올리면 연한 하늘색으로 */
+        }
 
-        /* 하단 푸터 */
-        footer { background-color: #333; color: white; text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.8rem; }
+        /* 2. 메인 자기소개 (Hero Section) */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), #6dd5fa);
+            color: var(--white);
+            text-align: center;
+            padding: 4rem 1rem;
+        }
 
-        /* 모바일 최적화 */
-        @media (max-width: 600px) {
-            .hero { padding: 3rem 1rem; }
-            .activities { flex-direction: column; }
-            header { flex-direction: column; gap: 10px; }
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--white);
+            color: var(--primary-color);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* 3. 콘텐츠 섹션 (About, Interests) */
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 5px solid var(--primary-color); /* 상단에 하늘색 포인트 */
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #e0f0ff;
+            padding-bottom: 0.5rem;
+        }
+
+        /* 관심사 카드 그리드 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: #f9fcff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #e1eef7;
+        }
+
+        .card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-dark);
+        }
+
+        /* 4. 푸터 */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: #333;
+            color: #ccc;
+            margin-top: auto;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Providing Academic INsights for Sports.</h1>
+        <a href="#" class="logo">My Portfolio</a>
         <nav>
-            <a href="https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e" target="_blank" class="apply-btn">Notion</a>
-            <a href="https://www.notion.so/painsports/PAINS-a9294ba2a44b4ea6a53f0d5ae069749e" target="_blank" class="apply-btn">Apply</a>
+            <ul>
+                <li><a href="#about">소개</a></li>
+                <li><a href="#interests">관심사</a></li>
+                <li><a href="#projects">프로젝트</a></li>
+            </ul>
         </nav>
     </header>
 
     <div class="hero">
-        <img src="PAINS_logo.png" alt="PAINS 메인 로고" class="hero-image">
-        <p>고려대학교 교내 유일 스포츠 통계분석 동아리 PAINS</p>
+        <h1>안녕하세요, [이름]입니다.</h1>
+        <p>데이터 과학과 프랑스어, 그리고 스포츠를 사랑하는 대학생입니다.</p>
+        <a href="#about" class="btn">더 알아보기</a>
     </div>
 
-    <section>
-        <h3>About Us</h3>
-        <p>
-            2020년 설립되어 2026년 전반기 11기로 활동하는 PAINS는 스포츠 통계를 사랑하는 사람들이 모이는 곳입니다.
-            전공에 상관없이 통계 지식과 스포츠에 대한 열정만 있다면 누구든 환영합니다!
-        </p>
-    </section>
+    <div class="container">
+        
+        <section id="about">
+            <h2>About Me</h2>
+            <p>
+                안녕하세요! 저는 현재 데이터 과학을 전공하며 세상을 데이터로 이해하는 법을 배우고 있습니다. 
+                학교에서는 기계학습과 알고리즘을 깊이 있게 공부하고 있으며, 
+                여름방학에는 학원 조교와 캠프 스태프로 활동하며 소통 능력도 키워왔습니다.
+                <br><br>
+                2028년에는 프랑스 교환학생을 목표로 어학 공부도 병행하고 있습니다.
+            </p>
+        </section>
 
-    <section>
-        <h3>Our Activities</h3>
-        <div class="activities">
-            <div class="card">
-                <h4>📚 정기 스터디</h4>
-                <p>지원자들을 대상으로 관심 분야별 심도 있는 스터디를 진행합니다.</p>
+        <section id="interests">
+            <h2>Interests</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>⚽ Sports</h3>
+                    <p>대구 FC의 열렬한 팬입니다! 직관을 즐기며, 야구 데이터 분석에도 관심이 많습니다.</p>
+                </div>
+                <div class="card">
+                    <h3>💻 Tech</h3>
+                    <p>Python, Machine Learning, 그리고 HTML/CSS를 활용한 웹 개발에 흥미가 있습니다.</p>
+                </div>
+                <div class="card">
+                    <h3>🇫🇷 Language</h3>
+                    <p>프랑스어(Français)를 공부 중입니다. 언어를 통해 더 넓은 세상을 만나고 싶습니다.</p>
+                </div>
             </div>
-            <div class="card">
-                <h4>🤝 프로젝트</h4>
-                <p>배운 내용을 바탕으로 학기 중, 방학 중에 한 번씩 정기 팀 프로젝트를 진행하며 실전 경험을 쌓습니다.</p>
-            </div>
-            <div class="card">
-                <h4>🎉 친목 활동</h4>
-                <p>선후배 및 부원 간 교류 활동. MT, 송년회 등 다양한 친목 활동이 개최됩니다.</p>
-            </div>
-        </div>
-    </section>
+        </section>
+
+        <section id="projects">
+            <h2>Projects</h2>
+            <ul>
+                <li><strong>Gemini 챗봇 개발:</strong> AI API를 활용한 맞춤형 챗봇 제작</li>
+                <li><strong>호텔 예약 취소 예측:</strong> 머신러닝을 활용한 데이터 분석 프로젝트</li>
+                <li><strong>동아리 웹사이트 제작:</strong> HTML/CSS를 활용한 홍보 페이지 구축</li>
+            </ul>
+        </section>
+
+    </div>
 
     <footer>
-        <p>문의: painsports1905@gmail.com | 위치: 한투스퀘어</p>
-        <p>&copy; 2025 PAINS. All rights reserved.</p>
+        <p>&copy; 2026 My Personal Website. All rights reserved.</p>
     </footer>
 
 </body>
