@@ -3,22 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>나의 홈페이지</title>
+    <title>자취방 후보 리스트</title>
     <style>
-        /* [스타일 설정] */
+        /* [기존 스타일 유지 및 주거용으로 수정] */
         :root {
             --primary-color: #0087D1; /* 대구FC 하늘색 */
             --primary-dark: #006096;
             --text-color: #333333;
             --bg-color: #f4f9fc;
             --white: #ffffff;
+            --accent-color: #ff6b6b; /* 강조(가격 등) 색상 추가 */
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
@@ -27,148 +24,241 @@
             background-color: var(--bg-color);
         }
 
-        /* 1. 메인 자기소개 (Hero Section) */
+        /* 1. 헤더 섹션 */
         .hero {
             background: linear-gradient(135deg, var(--primary-color), #6dd5fa);
             color: var(--white);
             text-align: center;
-            /* 상단 메뉴바가 없으므로 위아래 여백을 넉넉하게 조정 */
-            padding: 8rem 1rem 6rem 1rem;
+            padding: 6rem 1rem 5rem 1rem;
         }
 
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
+        .hero h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+        .hero p { font-size: 1.1rem; opacity: 0.9; }
 
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: var(--white);
-            color: var(--primary-color);
-            padding: 0.8rem 1.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        /* 2. 콘텐츠 섹션 */
+        /* 2. 메인 컨테이너 */
         .container {
-            max-width: 1000px;
-            margin: -3rem auto 2rem auto; /* Hero 섹션과 자연스럽게 겹치도록 위로 올림 */
-            padding: 0 1.5rem;
+            max-width: 900px;
+            margin: -3rem auto 2rem auto;
+            padding: 0 1rem;
             position: relative;
         }
 
+        /* 3. 매물 카드 스타일 */
         section {
             background: var(--white);
             padding: 2rem;
             border-radius: 15px;
             margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border-top: 5px solid var(--primary-color);
         }
 
-        h2 {
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
+        /* 매물 제목 영역 */
+        .house-header {
             border-bottom: 2px solid #e0f0ff;
-            padding-bottom: 0.5rem;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        /* 그리드 및 카드 스타일 */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .card {
-            background: #f9fcff;
-            padding: 1.5rem;
-            border-radius: 10px;
-            border: 1px solid #e1eef7;
-        }
-
-        .card h3 {
-            margin-bottom: 0.5rem;
+        .house-header h2 {
             color: var(--primary-dark);
+            font-size: 1.5rem;
         }
 
-        /* 3. 푸터 */
+        .price-tag {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        /* 상세 정보 그리드 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid { grid-template-columns: 1fr; }
+        }
+
+        .info-item h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #555; }
+        .info-item ul { list-style-type: none; padding-left: 0.5rem; }
+        .info-item li { margin-bottom: 0.3rem; position: relative; padding-left: 1.2rem; }
+        .info-item li::before {
+            content: "✔";
+            color: var(--primary-color);
+            position: absolute; left: 0; font-weight: bold;
+        }
+
+        /* 사진 갤러리 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .gallery img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            background-color: #eee;
+            border: 1px solid #ddd;
+        }
+
+        /* 지도 영역 */
+        .map-area {
+            width: 100%;
+            height: 300px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #777;
+            font-weight: bold;
+            border: 1px solid #ddd;
+        }
+
         footer {
             text-align: center;
             padding: 2rem;
-            background-color: #333;
-            color: #ccc;
+            color: #888;
+            font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
     <div class="hero">
-        <h1>안녕하세요, [이름]입니다.</h1>
-        <p>데이터 과학과 프랑스어, 그리고 스포츠를 사랑하는 대학생입니다.</p>
-        <a href="#about" class="btn">더 알아보기</a>
+        <h1>🏡 자취방 후보 리스트</h1>
+        <p>엄마, 아빠! 제가 직접 발로 뛰며 알아본 곳들이에요.<br>꼼꼼히 비교해보고 결정하고 싶어요.</p>
     </div>
 
     <div class="container">
         
-        <section id="about">
-            <h2>About Me</h2>
-            <p>
-                안녕하세요! 저는 현재 데이터 과학을 전공하며 세상을 데이터로 이해하는 법을 배우고 있습니다. 
-                학교에서는 기계학습과 알고리즘을 깊이 있게 공부하고 있으며, 
-                여름방학에는 학원 조교와 캠프 스태프로 활동하며 소통 능력도 키워왔습니다.
-                <br><br>
-                2028년에는 프랑스 교환학생을 목표로 어학 공부도 병행하고 있습니다.
-            </p>
-        </section>
+        <section id="house1">
+            <div class="house-header">
+                <h2>1. 학교 정문 앞 그린빌 (203호)</h2>
+                <span class="price-tag">보증금 500 / 월 45 (관리비 5)</span>
+            </div>
 
-        <section id="interests">
-            <h2>Interests</h2>
-            <div class="grid">
-                <div class="card">
-                    <h3>⚽ Sports</h3>
-                    <p>대구 FC의 열렬한 팬입니다! 직관을 즐기며, 야구 데이터 분석에도 관심이 많습니다.</p>
+            <div class="gallery">
+                <img src="https://via.placeholder.com/300x200?text=Room+Photo+1" alt="방 사진 1">
+                <img src="https://via.placeholder.com/300x200?text=Room+Photo+2" alt="방 사진 2">
+                <img src="https://via.placeholder.com/300x200?text=Kitchen" alt="주방/화장실">
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>📍 기본 정보</h3>
+                    <ul>
+                        <li><strong>주소:</strong> 대구광역시 북구 대학로 80 (가상 주소)</li>
+                        <li><strong>크기:</strong> 약 7평 (오픈형 원룸)</li>
+                        <li><strong>층수:</strong> 2층 / 4층 (엘리베이터 X)</li>
+                        <li><strong>방향:</strong> 남향 (햇빛 잘 듦)</li>
+                    </ul>
                 </div>
-                <div class="card">
-                    <h3>💻 Tech</h3>
-                    <p>Python, Machine Learning, 그리고 HTML/CSS를 활용한 웹 개발에 흥미가 있습니다.</p>
+                <div class="info-item">
+                    <h3>✨ 주요 특징 (장/단점)</h3>
+                    <ul>
+                        <li>학교 정문까지 도보 3분 거리 (지각 걱정 없음)</li>
+                        <li>편의점, 카페가 바로 1층에 있음</li>
+                        <li>풀옵션 (세탁기, 냉장고, 책상 포함)</li>
+                        <li>단점: 건물이 조금 오래됨, 방음이 약해 보임</li>
+                    </ul>
                 </div>
-                <div class="card">
-                    <h3>🇫🇷 Language</h3>
-                    <p>프랑스어(Français)를 공부 중입니다. 언어를 통해 더 넓은 세상을 만나고 싶습니다.</p>
-                </div>
+            </div>
+
+            <div id="map1" class="map-area">
+                지도가 표시될 영역입니다 (API 연동 필요)
             </div>
         </section>
 
-        <section id="projects">
-            <h2>Projects</h2>
-            <ul>
-                <li><strong>Gemini 챗봇 개발:</strong> AI API를 활용한 맞춤형 챗봇 제작</li>
-                <li><strong>호텔 예약 취소 예측:</strong> 머신러닝을 활용한 데이터 분석 프로젝트</li>
-                <li><strong>동아리 웹사이트 제작:</strong> HTML/CSS를 활용한 홍보 페이지 구축</li>
-            </ul>
+
+        <section id="house2">
+            <div class="house-header">
+                <h2>2. 역세권 스카이 오피스텔 (505호)</h2>
+                <span class="price-tag" style="background-color: #006096;">보증금 1000 / 월 55 (관리비 별도)</span>
+            </div>
+
+            <div class="gallery">
+                <img src="https://via.placeholder.com/300x200?text=Living+Room" alt="거실">
+                <img src="https://via.placeholder.com/300x200?text=View" alt="뷰">
+                <img src="https://via.placeholder.com/300x200?text=Bathroom" alt="화장실">
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>📍 기본 정보</h3>
+                    <ul>
+                        <li><strong>주소:</strong> 대구광역시 중구 중앙대로 123</li>
+                        <li><strong>크기:</strong> 약 9평 (복층형)</li>
+                        <li><strong>층수:</strong> 5층 / 10층 (엘리베이터 O)</li>
+                        <li><strong>보안:</strong> 1층 공동현관 비번, CCTV</li>
+                    </ul>
+                </div>
+                <div class="info-item">
+                    <h3>✨ 주요 특징 (장/단점)</h3>
+                    <ul>
+                        <li>지하철역 도보 5분, 교통이 매우 편리함</li>
+                        <li>신축이라 벌레 걱정 없고 매우 깨끗함</li>
+                        <li>보안이 철저해서 안전함</li>
+                        <li>단점: 학교까지 버스 타고 20분 걸림, 월세가 비쌈</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="map2" class="map-area">
+                지도가 표시될 영역입니다 (API 연동 필요)
+            </div>
         </section>
 
     </div>
 
     <footer>
-        <p>&copy; 2026 My Personal Website. All rights reserved.</p>
+        <p>사랑하는 아들/딸 올림 🙇‍♂️🙇‍♀️</p>
     </footer>
 
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=발급받은_Javascript_키"></script>
+    <script>
+        // 지도를 띄우는 함수 (지도 ID, 위도, 경도)
+        function loadMap(containerId, lat, lng) {
+            var container = document.getElementById(containerId); 
+            if(!container) return; // 지도를 넣을 칸이 없으면 중단
+
+            var options = { 
+                center: new kakao.maps.LatLng(lat, lng), // 중심 좌표
+                level: 3 // 확대 레벨
+            };
+
+            var map = new kakao.maps.Map(container, options); 
+
+            // 마커 찍기
+            var markerPosition  = new kakao.maps.LatLng(lat, lng); 
+            var marker = new kakao.maps.Marker({ position: markerPosition });
+            marker.setMap(map);
+        }
+
+        // 페이지 로딩이 끝나면 지도 실행 (API키가 정상적일 때만 작동합니다)
+        // 아래 위도(35.88...), 경도(128.61...) 숫자를 실제 집 위치로 바꾸세요! (구글지도에서 우클릭하면 확인 가능)
+        
+        // 후보 1번 지도 (경북대 인근 예시 좌표)
+        loadMap('map1', 35.8906, 128.6121); 
+
+        // 후보 2번 지도 (반월당 인근 예시 좌표)
+        loadMap('map2', 35.8655, 128.5934); 
+    </script>
 </body>
 </html>
