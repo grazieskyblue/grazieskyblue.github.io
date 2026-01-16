@@ -53,19 +53,19 @@
         <p>Data from Google Sheets &copy; 2026</p>
     </footer>
 
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=발급받은_Javascript_키"></script>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=발급받은_Javascript_키"></script>
 
     <script>
-        // 1. 여기에 아까 복사한 '웹에 게시 > CSV' 링크를 넣으세요.
-        const googleSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfzBEtkuKzAt5KSlG6w0hFIN-SUJhxOaNqg2dZaoBY7cj2915CodbuP0C_tRi5rBZJ8ry5siN8aGN7/pub?output=csv";
+        // 1. 구글 시트 주소 (아까 넣은 올바른 주소 유지)
+        const googleSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-......(본인주소)...../pub?output=csv";
 
         window.onload = function() {
             Papa.parse(googleSheetUrl, {
                 download: true,
                 header: true,
-                skipEmptyLines: true, // 빈 줄은 자동으로 건너뛰기
+                skipEmptyLines: true,
                 complete: function(results) {
-                    console.log("총 데이터 개수:", results.data.length); // F12 콘솔에서 개수 확인 가능
+                    console.log("총 데이터 개수:", results.data.length);
                     displayHouses(results.data);
                 }
             });
@@ -75,15 +75,14 @@
             const container = document.getElementById('house-list-container');
             container.innerHTML = ''; 
 
-            let count = 0; // 실제로 화면에 뿌려진 집 개수 카운트
+            let count = 0;
 
             data.forEach((house, index) => {
-                // [중요] 이름이 비어있으면 아예 실행하지 않음 (오류 방지)
                 if(!house.이름 || house.이름.trim() === "") return;
 
-                count++; // 유효한 데이터 개수 증가
+                count++;
 
-                // 이미지 URL이 없으면 기본 이미지로 설정
+                // 이미지 처리
                 let imageUrl = house.이미지URL;
                 if(!imageUrl || imageUrl.trim() === "") {
                     imageUrl = "https://placehold.co/600x400?text=No+Image";
@@ -95,12 +94,10 @@
                             <h2>${count}. ${house.이름}</h2>
                             <span class="price-tag">${house.가격}</span>
                         </div>
-
                         <div class="gallery">
                             <img src="${imageUrl}" alt="${house.이름}" 
                                  onerror="this.src='https://placehold.co/600x400?text=Error';">
                         </div>
-
                         <div class="info-grid">
                             <div class="info-item">
                                 <h3>📍 기본 정보</h3>
@@ -111,49 +108,58 @@
                                 </ul>
                             </div>
                             <div class="info-item">
-                                <h3>✨ 장단점 및 특징</h3>
+                                <h3>✨ 특징</h3>
                                 <ul>
-                                    <li>👍 <strong>장점:</strong> ${house.장점}</li>
-                                    <li>👎 <strong>단점:</strong> ${house.단점}</li>
+                                    <li>👍 ${house.장점}</li>
+                                    <li>👎 ${house.단점}</li>
                                 </ul>
                             </div>
                         </div>
-
-                        <div id="map-${index}" class="map-area"></div>
+                        <div id="map-${index}" class="map-area">
+                            <p style="text-align:center; padding-top:130px; color:#999;">지도를 불러오는 중...</p>
+                        </div>
                     </section>
                 `;
 
                 container.insertAdjacentHTML('beforeend', htmlContent);
 
-                // 지도 생성 (좌표가 있을 때만)
+                // [수정된 부분] 안전장치 추가: 지도가 실패해도 다음 집을 보여줌
                 if(house.위도 && house.경도) {
-                    // 좌표 데이터에 혹시 공백이 있을까봐 trim() 처리
-                    loadMap(`map-${index}`, house.위도.trim(), house.경도.trim());
+                    setTimeout(() => {
+                        loadMap(`map-${index}`, house.위도, house.경도);
+                    }, 500); // 0.5초 뒤에 지도 로딩 시도
                 }
             });
-            
-            if(count === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:50px;">데이터를 불러왔지만 표시할 내용이 없습니다.<br>CSV 링크나 시트 내용을 확인해주세요.</div>';
-            }
         }
 
+        // [수정된 부분] 지도가 없어도 멈추지 않게 방어 코드 작성
         function loadMap(elementId, lat, lng) {
-            var container = document.getElementById(elementId);
-            if(!container) return; // 혹시 영역이 없으면 중단
+            // 카카오 스크립트가 로드되지 않았으면 중단 (에러 내지 않음)
+            if (typeof kakao === 'undefined' || !kakao.maps) {
+                console.error("카카오 지도 API가 로드되지 않았습니다. API 키를 확인하세요.");
+                document.getElementById(elementId).innerHTML = "<p style='text-align:center; padding-top:130px; color:red;'>지도 로딩 실패 (API 키 확인 필요)</p>";
+                return;
+            }
 
-            var options = {
-                center: new kakao.maps.LatLng(lat, lng),
-                level: 3
-            };
-            var map = new kakao.maps.Map(container, options);
-            
-            var markerPosition  = new kakao.maps.LatLng(lat, lng); 
-            var marker = new kakao.maps.Marker({ position: markerPosition });
-            marker.setMap(map);
+            try {
+                var container = document.getElementById(elementId);
+                var options = {
+                    center: new kakao.maps.LatLng(lat, lng),
+                    level: 3
+                };
+                var map = new kakao.maps.Map(container, options);
+                
+                var markerPosition  = new kakao.maps.LatLng(lat, lng); 
+                var marker = new kakao.maps.Marker({ position: markerPosition });
+                marker.setMap(map);
+            } catch (error) {
+                console.error("지도 생성 중 오류 발생:", error);
+            }
         }
     </script>
 </body>
 </html>
+
 
 
 
