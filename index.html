@@ -57,14 +57,15 @@
 
     <script>
         // 1. 여기에 아까 복사한 '웹에 게시 > CSV' 링크를 넣으세요.
-        const googleSheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfzBEtkuKzAt5KSlG6w0hFIN-SUJhxOaNqg2dZaoBY7cj2915CodbuP0C_tRi5rBZJ8ry5siN8aGN7/pub?gid=0&single=true&output=csv";
+        const googleSheetUrl = "여기에_복사한_CSV_링크를_붙여넣으세요";
 
-        // 페이지가 로드되면 실행
         window.onload = function() {
             Papa.parse(googleSheetUrl, {
                 download: true,
-                header: true, // 첫 줄을 변수명(Key)으로 사용
+                header: true,
+                skipEmptyLines: true, // 빈 줄은 자동으로 건너뛰기
                 complete: function(results) {
+                    console.log("총 데이터 개수:", results.data.length); // F12 콘솔에서 개수 확인 가능
                     displayHouses(results.data);
                 }
             });
@@ -72,23 +73,32 @@
 
         function displayHouses(data) {
             const container = document.getElementById('house-list-container');
-            container.innerHTML = ''; // 로딩 메시지 삭제
+            container.innerHTML = ''; 
+
+            let count = 0; // 실제로 화면에 뿌려진 집 개수 카운트
 
             data.forEach((house, index) => {
-                // 빈 줄이 들어오는 경우 방지
-                if(!house.이름) return; 
+                // [중요] 이름이 비어있으면 아예 실행하지 않음 (오류 방지)
+                if(!house.이름 || house.이름.trim() === "") return;
 
-                // 2. HTML 템플릿 생성 (백틱 `` 사용)
-                // 시트의 컬럼명(house.이름, house.가격 등)을 그대로 사용합니다.
+                count++; // 유효한 데이터 개수 증가
+
+                // 이미지 URL이 없으면 기본 이미지로 설정
+                let imageUrl = house.이미지URL;
+                if(!imageUrl || imageUrl.trim() === "") {
+                    imageUrl = "https://placehold.co/600x400?text=No+Image";
+                }
+
                 const htmlContent = `
                     <section>
                         <div class="house-header">
-                            <h2>${index + 1}. ${house.이름}</h2>
+                            <h2>${count}. ${house.이름}</h2>
                             <span class="price-tag">${house.가격}</span>
                         </div>
 
                         <div class="gallery">
-                            <img src="${house.이미지URL}" alt="${house.이름} 사진" onerror="this.src='https://via.placeholder.com/800x200?text=No+Image'">
+                            <img src="${imageUrl}" alt="${house.이름}" 
+                                 onerror="this.src='https://placehold.co/600x400?text=Error';">
                         </div>
 
                         <div class="info-grid">
@@ -113,26 +123,30 @@
                     </section>
                 `;
 
-                // HTML 삽입
                 container.insertAdjacentHTML('beforeend', htmlContent);
 
-                // 3. 지도 생성 함수 호출 (위도, 경도 데이터가 있을 때만)
+                // 지도 생성 (좌표가 있을 때만)
                 if(house.위도 && house.경도) {
-                    loadMap(`map-${index}`, house.위도, house.경도);
+                    // 좌표 데이터에 혹시 공백이 있을까봐 trim() 처리
+                    loadMap(`map-${index}`, house.위도.trim(), house.경도.trim());
                 }
             });
+            
+            if(count === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:50px;">데이터를 불러왔지만 표시할 내용이 없습니다.<br>CSV 링크나 시트 내용을 확인해주세요.</div>';
+            }
         }
 
-        // 지도 띄우는 함수
         function loadMap(elementId, lat, lng) {
             var container = document.getElementById(elementId);
+            if(!container) return; // 혹시 영역이 없으면 중단
+
             var options = {
                 center: new kakao.maps.LatLng(lat, lng),
                 level: 3
             };
             var map = new kakao.maps.Map(container, options);
             
-            // 마커 추가
             var markerPosition  = new kakao.maps.LatLng(lat, lng); 
             var marker = new kakao.maps.Marker({ position: markerPosition });
             marker.setMap(map);
@@ -140,4 +154,5 @@
     </script>
 </body>
 </html>
+
 
