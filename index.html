@@ -3,263 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>방 후보 리스트</title>
+    <title>자취방 후보 리스트 (Live)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        /* [기존 스타일 유지 및 주거용으로 수정] */
-        :root {
-            --primary-color: #0087D1; /* 대구FC 하늘색 */
-            --primary-dark: #006096;
-            --text-color: #333333;
-            --bg-color: #f4f9fc;
-            --white: #ffffff;
-            --accent-color: #ff6b6b; /* 강조(가격 등) 색상 추가 */
-        }
-
+        /* [기존 스타일 그대로 유지] */
+        :root { --primary-color: #0087D1; --primary-dark: #006096; --text-color: #333; --bg-color: #f4f9fc; --white: #fff; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--bg-color);
-        }
-
-        /* 1. 헤더 섹션 */
-        .hero {
-            background: linear-gradient(135deg, var(--primary-color), #6dd5fa);
-            color: var(--white);
-            text-align: center;
-            padding: 6rem 1rem 5rem 1rem;
-        }
-
-        .hero h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
-        .hero p { font-size: 1.1rem; opacity: 0.9; }
-
-        /* 2. 메인 컨테이너 */
-        .container {
-            max-width: 900px;
-            margin: -3rem auto 2rem auto;
-            padding: 0 1rem;
-            position: relative;
-        }
-
-        /* 3. 매물 카드 스타일 */
-        section {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-top: 5px solid var(--primary-color);
-        }
-
-        /* 매물 제목 영역 */
-        .house-header {
-            border-bottom: 2px solid #e0f0ff;
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .house-header h2 {
-            color: var(--primary-dark);
-            font-size: 1.5rem;
-        }
-
-        .price-tag {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.95rem;
-        }
-
-        /* 상세 정보 그리드 */
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        @media (max-width: 768px) {
-            .info-grid { grid-template-columns: 1fr; }
-        }
-
-        .info-item h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #555; }
-        .info-item ul { list-style-type: none; padding-left: 0.5rem; }
-        .info-item li { margin-bottom: 0.3rem; position: relative; padding-left: 1.2rem; }
-        .info-item li::before {
-            content: "✔";
-            color: var(--primary-color);
-            position: absolute; left: 0; font-weight: bold;
-        }
-
-        /* 사진 갤러리 */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 1.5rem;
-        }
+        body { font-family: 'Pretendard', sans-serif; line-height: 1.6; color: var(--text-color); background: var(--bg-color); }
         
-        .gallery img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-            background-color: #eee;
-            border: 1px solid #ddd;
-        }
-
-        /* 지도 영역 */
-        .map-area {
-            width: 100%;
-            height: 300px;
-            background-color: #e9ecef;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #777;
-            font-weight: bold;
-            border: 1px solid #ddd;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: #888;
-            font-size: 0.9rem;
-        }
+        .hero { background: linear-gradient(135deg, var(--primary-color), #6dd5fa); color: var(--white); text-align: center; padding: 6rem 1rem 5rem 1rem; }
+        .container { max-width: 900px; margin: -3rem auto 2rem auto; padding: 0 1rem; position: relative; }
+        
+        /* 동적으로 생성될 카드 스타일 */
+        section { background: var(--white); padding: 2rem; border-radius: 15px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 5px solid var(--primary-color); }
+        .house-header { border-bottom: 2px solid #e0f0ff; padding-bottom: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .house-header h2 { color: var(--primary-dark); font-size: 1.5rem; }
+        .price-tag { background-color: var(--primary-color); color: white; padding: 0.4rem 1rem; border-radius: 20px; font-weight: bold; font-size: 0.95rem; }
+        
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1.5rem; }
+        @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } }
+        
+        .info-item h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #555; }
+        .info-item ul { list-style-type: none; }
+        .info-item li { margin-bottom: 0.3rem; position: relative; padding-left: 1.2rem; }
+        .info-item li::before { content: "✔"; color: var(--primary-color); position: absolute; left: 0; font-weight: bold; }
+        
+        .gallery img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #ddd; }
+        
+        .map-area { width: 100%; height: 300px; background: #e9ecef; border-radius: 10px; border: 1px solid #ddd; }
+        
+        /* 로딩 표시 */
+        #loading { text-align: center; padding: 2rem; font-size: 1.2rem; color: #666; }
     </style>
 </head>
 <body>
 
     <div class="hero">
-        <h1>🏡 방 후보 리스트</h1>
-        <p>현재 추려본 후보들입니다.<br>꼼꼼히 비교해보고 결정하려 노력하고 있습니다.</p>
+        <h1>🏡 자취방 후보 리스트</h1>
+        <p>실시간으로 업데이트되는 자취방 후보들입니다.</p>
     </div>
 
     <div class="container">
-        
-        <section id="house1">
-            <div class="house-header">
-                <h2>1. 학교 정문 앞 그린빌 (203호)</h2>
-                <span class="price-tag">보증금 500 / 월 45 (관리비 5)</span>
-            </div>
-
-            <div class="gallery">
-                <img src="https://via.placeholder.com/300x200?text=Room+Photo+1" alt="방 사진 1">
-                <img src="https://via.placeholder.com/300x200?text=Room+Photo+2" alt="방 사진 2">
-                <img src="https://via.placeholder.com/300x200?text=Kitchen" alt="주방/화장실">
-            </div>
-
-            <div class="info-grid">
-                <div class="info-item">
-                    <h3>📍 기본 정보</h3>
-                    <ul>
-                        <li><strong>주소:</strong> 대구광역시 북구 대학로 80 (가상 주소)</li>
-                        <li><strong>크기:</strong> 약 7평 (오픈형 원룸)</li>
-                        <li><strong>층수:</strong> 2층 / 4층 (엘리베이터 X)</li>
-                        <li><strong>방향:</strong> 남향 (햇빛 잘 듦)</li>
-                    </ul>
-                </div>
-                <div class="info-item">
-                    <h3>✨ 주요 특징 (장/단점)</h3>
-                    <ul>
-                        <li>학교 정문까지 도보 3분 거리 (지각 걱정 없음)</li>
-                        <li>편의점, 카페가 바로 1층에 있음</li>
-                        <li>풀옵션 (세탁기, 냉장고, 책상 포함)</li>
-                        <li>단점: 건물이 조금 오래됨, 방음이 약해 보임</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div id="map1" class="map-area">
-                지도가 표시될 영역입니다 (API 연동 필요)
-            </div>
-        </section>
-
-
-        <section id="house2">
-            <div class="house-header">
-                <h2>2. 역세권 스카이 오피스텔 (505호)</h2>
-                <span class="price-tag" style="background-color: #006096;">보증금 1000 / 월 55 (관리비 별도)</span>
-            </div>
-
-            <div class="gallery">
-                <img src="https://via.placeholder.com/300x200?text=Living+Room" alt="거실">
-                <img src="https://via.placeholder.com/300x200?text=View" alt="뷰">
-                <img src="https://via.placeholder.com/300x200?text=Bathroom" alt="화장실">
-            </div>
-
-            <div class="info-grid">
-                <div class="info-item">
-                    <h3>📍 기본 정보</h3>
-                    <ul>
-                        <li><strong>주소:</strong> 대구광역시 중구 중앙대로 123</li>
-                        <li><strong>크기:</strong> 약 9평 (복층형)</li>
-                        <li><strong>층수:</strong> 5층 / 10층 (엘리베이터 O)</li>
-                        <li><strong>보안:</strong> 1층 공동현관 비번, CCTV</li>
-                    </ul>
-                </div>
-                <div class="info-item">
-                    <h3>✨ 주요 특징 (장/단점)</h3>
-                    <ul>
-                        <li>지하철역 도보 5분, 교통이 매우 편리함</li>
-                        <li>신축이라 벌레 걱정 없고 매우 깨끗함</li>
-                        <li>보안이 철저해서 안전함</li>
-                        <li>단점: 학교까지 버스 타고 20분 걸림, 월세가 비쌈</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div id="map2" class="map-area">
-                지도가 표시될 영역입니다 (API 연동 필요)
-            </div>
-        </section>
-
+        <div id="house-list-container">
+            <div id="loading">데이터를 불러오는 중입니다...</div>
+        </div>
     </div>
 
     <footer>
-        <p>사랑하는 아들/딸 올림 🙇‍♂️🙇‍♀️</p>
+        <p>Data from Google Sheets &copy; 2026</p>
     </footer>
 
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=발급받은_Javascript_키"></script>
+
     <script>
-        // 지도를 띄우는 함수 (지도 ID, 위도, 경도)
-        function loadMap(containerId, lat, lng) {
-            var container = document.getElementById(containerId); 
-            if(!container) return; // 지도를 넣을 칸이 없으면 중단
+        // 1. 여기에 아까 복사한 '웹에 게시 > CSV' 링크를 넣으세요.
+        const googleSheetUrl = "여기에_복사한_CSV_링크를_붙여넣으세요";
 
-            var options = { 
-                center: new kakao.maps.LatLng(lat, lng), // 중심 좌표
-                level: 3 // 확대 레벨
+        // 페이지가 로드되면 실행
+        window.onload = function() {
+            Papa.parse(googleSheetUrl, {
+                download: true,
+                header: true, // 첫 줄을 변수명(Key)으로 사용
+                complete: function(results) {
+                    displayHouses(results.data);
+                }
+            });
+        };
+
+        function displayHouses(data) {
+            const container = document.getElementById('house-list-container');
+            container.innerHTML = ''; // 로딩 메시지 삭제
+
+            data.forEach((house, index) => {
+                // 빈 줄이 들어오는 경우 방지
+                if(!house.이름) return; 
+
+                // 2. HTML 템플릿 생성 (백틱 `` 사용)
+                // 시트의 컬럼명(house.이름, house.가격 등)을 그대로 사용합니다.
+                const htmlContent = `
+                    <section>
+                        <div class="house-header">
+                            <h2>${index + 1}. ${house.이름}</h2>
+                            <span class="price-tag">${house.가격}</span>
+                        </div>
+
+                        <div class="gallery">
+                            <img src="${house.이미지URL}" alt="${house.이름} 사진" onerror="this.src='https://via.placeholder.com/800x200?text=No+Image'">
+                        </div>
+
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <h3>📍 기본 정보</h3>
+                                <ul>
+                                    <li><strong>주소:</strong> ${house.주소}</li>
+                                    <li><strong>크기:</strong> ${house.크기}</li>
+                                    <li><strong>층수:</strong> ${house.층수}</li>
+                                </ul>
+                            </div>
+                            <div class="info-item">
+                                <h3>✨ 장단점 및 특징</h3>
+                                <ul>
+                                    <li>👍 <strong>장점:</strong> ${house.장점}</li>
+                                    <li>👎 <strong>단점:</strong> ${house.단점}</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div id="map-${index}" class="map-area"></div>
+                    </section>
+                `;
+
+                // HTML 삽입
+                container.insertAdjacentHTML('beforeend', htmlContent);
+
+                // 3. 지도 생성 함수 호출 (위도, 경도 데이터가 있을 때만)
+                if(house.위도 && house.경도) {
+                    loadMap(`map-${index}`, house.위도, house.경도);
+                }
+            });
+        }
+
+        // 지도 띄우는 함수
+        function loadMap(elementId, lat, lng) {
+            var container = document.getElementById(elementId);
+            var options = {
+                center: new kakao.maps.LatLng(lat, lng),
+                level: 3
             };
-
-            var map = new kakao.maps.Map(container, options); 
-
-            // 마커 찍기
+            var map = new kakao.maps.Map(container, options);
+            
+            // 마커 추가
             var markerPosition  = new kakao.maps.LatLng(lat, lng); 
             var marker = new kakao.maps.Marker({ position: markerPosition });
             marker.setMap(map);
         }
-
-        // 페이지 로딩이 끝나면 지도 실행 (API키가 정상적일 때만 작동합니다)
-        // 아래 위도(35.88...), 경도(128.61...) 숫자를 실제 집 위치로 바꾸세요! (구글지도에서 우클릭하면 확인 가능)
-        
-        // 후보 1번 지도 (경북대 인근 예시 좌표)
-        loadMap('map1', 35.8906, 128.6121); 
-
-        // 후보 2번 지도 (반월당 인근 예시 좌표)
-        loadMap('map2', 35.8655, 128.5934); 
     </script>
 </body>
 </html>
-
