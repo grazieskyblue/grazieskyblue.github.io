@@ -3,635 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>대구FC 경기 일정 달력</title>
+    <title>승리 요정 판독기 - 직관 성적 유의성 검정</title>
     <style>
         /* ============================ */
         /* [1] 기본 설정 및 레이아웃 */
         /* ============================ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Pretendard', sans-serif; padding: 20px; background-color: #f4f7f9; }
+        body { 
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; 
+            padding: 40px 20px; 
+            background-color: #f4f7f9; 
+            color: #333;
+        }
 
         section {
-            max-width: 1000px !important; 
+            max-width: 800px; 
             width: 100%;
-            margin: 0 auto 28px auto !important;
+            margin: 0 auto;
             background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,168,255,0.08);
         }
 
         /* 메인 컬러: 선명한 하늘색 (#00a8ff) */
-        h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
             color: #00a8ff; 
             text-align: center;
+            font-weight: 800;
         }
 
-        strong { color: #00a8ff; }
-
-        /* ============================ */
-        /* [2] 달력 및 컴포넌트 스타일  */
-        /* ============================ */
-        .calendar-container {
-            width: 100%;
-            background: transparent !important; 
-            position: relative;
-            overflow: visible;
-        }
-
-        .calendar-header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-            position: relative;
-            gap: 10px;
-            z-index: 50;
-        }
-
-        .btn-today-reset {
-            padding: 5px 12px;
-            background: white;
-            border: 1px solid #00a8ff;
-            color: #00a8ff;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            margin-left: auto;
-            transition: all 0.2s;
-            font-weight: bold;
-        }
-
-        .btn-today-reset:hover {
-            background-color: #00a8ff;
-            color: white;
-        }
-
-        .calendar-nav-group {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .calendar-title {
-            font-size: 1.5rem;
-            cursor: pointer;
-            position: relative;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .calendar-title:hover { text-decoration: underline; color: #00a8ff; }
-
-        .date-picker {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 280px;
-            height: 240px;
-            background: white;
-            border: 1px solid #ccc;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 2000;
-            border-radius: 4px;
-            flex-direction: column;
-            text-align: left;
-        }
-
-        .date-picker.active { display: flex; }
-
-        .picker-header {
-            padding: 10px 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            color: #333;
-            font-size: 0.95rem;
-        }
-
-        .picker-close { cursor: pointer; color: #999; font-size: 1.2rem; }
-        .picker-close:hover { color: #333; }
-
-        .picker-body { display: flex; flex: 1; overflow: hidden; }
-        .picker-col { flex: 1; overflow-y: auto; border-right: 1px solid #eee; }
-        .picker-col:last-child { border-right: none; }
-        .picker-col::-webkit-scrollbar { width: 6px; }
-        .picker-col::-webkit-scrollbar-thumb { background-color: #ddd; border-radius: 3px; }
-
-        .picker-item { padding: 8px 15px; cursor: pointer; font-size: 0.9rem; color: #555; }
-        .picker-item:hover { background-color: #f5f5f5; }
-        .picker-item.selected {
-            background-color: #e6f7ff;
-            color: #00a8ff;
-            font-weight: bold;
-        }
-
-        .calendar-nav-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
+        p.desc {
+            text-align: center;
             color: #666;
-            transition: color 0.3s;
-            padding: 0 5px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            word-break: keep-all;
         }
-        .calendar-nav-btn:hover { color: #00a8ff; }
 
-        .calendar-body { display: flex; flex-direction: column; width: 100%; }
+        /* ============================ */
+        /* [2] 입력 폼 스타일 */
+        /* ============================ */
+        .input-group {
+            margin-bottom: 2rem;
+            padding: 20px;
+            background: #f8fbff;
+            border-radius: 12px;
+            border: 1px solid #e1f0fa;
+        }
 
-        .weekday-row {
+        .input-group h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group h3::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 18px;
+            background-color: #00a8ff;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+
+        .grid-3 {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            border-bottom: 1px solid #eee;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
         }
 
-        .weekday { text-align: center; padding: 10px 0; font-weight: bold; color: #555; }
-        .weekday.sun { color: #e74c3c; } /* 일요일/공휴일은 시인성을 위해 빨간색 유지 */
-        .weekday.sat { color: #3498db; }
-
-        .week-row {
-            position: relative;
-            min-height: 100px;
-            border-bottom: 1px solid #eee;
+        .stat-box {
+            display: flex;
+            flex-direction: column;
         }
 
-        .day-bg-layer {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none;
-        }
-
-        .day-cell-bg {
-            border-right: 1px solid #eee;
-            padding: 5px; display: flex; justify-content: flex-end;
-        }
-        .day-cell-bg:last-child { border-right: none; }
-
-        .day-number { font-size: 0.9rem; color: #333; }
-        .day-cell-bg.sun .day-number { color: #e74c3c; }
-        .day-cell-bg.sat .day-number { color: #3498db; }
-        .day-cell-bg.other-month { background-color: rgba(249, 249, 249, 0.5); }
-        .day-cell-bg.other-month .day-number { color: #ccc; }
-
-        .day-cell-bg.today { background-color: #e6f7ff; }
-        .day-cell-bg.today .day-number {
+        .stat-box label {
+            font-size: 0.9rem;
             font-weight: bold;
-            color: #00a8ff;
-            text-decoration: underline;
-        }
-        .day-cell-bg.holiday .day-number { color: #e74c3c !important; }
-
-        .events-layer {
-            position: relative; z-index: 2; width: 100%;
-            margin-top: 30px; padding-bottom: 5px;
+            color: #555;
+            margin-bottom: 8px;
         }
 
-        .event-bar {
-            position: absolute; height: 22px; line-height: 22px;
-            border-radius: 4px; padding: 0 6px; font-size: 0.75rem;
-            color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            transition: opacity 0.2s, transform 0.1s;
+        .stat-box input {
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            transition: border-color 0.2s;
         }
 
-        .event-bar:hover { opacity: 0.9; transform: scale(1.01); z-index: 10; }
-
-        /* 경기 종류별 색상 (원하는 대로 수정 가능) */
-        .event-bar.kleague { background-color: #00a8ff; } /* K리그: 메인 하늘색 */
-        .event-bar.facup { background-color: #27ae60; }   /* 코리아컵: 초록색 */
-        .event-bar.acl { background-color: #8e44ad; }     /* ACL: 보라색 */
-        .event-bar.etc { background-color: #7f8c8d; }
-
-        /* 상세 모달 */
-        .event-modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.5); z-index: 3000;
-            justify-content: center; align-items: center;
+        .stat-box input:focus {
+            outline: none;
+            border-color: #00a8ff;
         }
 
-        .event-modal {
-            background: white; width: 350px; max-width: 90%; border-radius: 12px;
-            padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); position: relative;
-            animation: fadeIn 0.3s ease;
+        /* 버튼 */
+        .btn-calc {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            background-color: #00a8ff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0,168,255,0.3);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        .btn-calc:hover {
+            background-color: #0097e6;
+            transform: translateY(-2px);
+        }
+
+        /* ============================ */
+        /* [3] 결과 출력 스타일 */
+        /* ============================ */
+        .result-container {
+            display: none;
+            margin-top: 2rem;
+            padding: 30px;
+            background: white;
+            border: 2px solid #00a8ff;
+            border-radius: 12px;
+            text-align: center;
+            animation: slideDown 0.4s ease-out forwards;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .event-modal-close {
-            position: absolute; top: 15px; right: 15px; font-size: 1.5rem;
-            color: #999; cursor: pointer; line-height: 1;
-        }
-        .event-modal-close:hover { color: #00a8ff; }
-
-        .event-modal-badge {
-            display: inline-block; padding: 5px 10px; border-radius: 20px;
-            font-size: 0.8rem; font-weight: bold; color: white; margin-bottom: 10px;
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
         }
 
-        .event-modal-title {
-            font-size: 1.3rem; font-weight: bold; margin-bottom: 15px;
-            color: #333; word-break: keep-all;
+        .result-title.fairy { color: #e15f41; } /* 승리요정 (주황/빨강) */
+        .result-title.curse { color: #546de5; } /* 패배요정 (파랑) */
+        .result-title.normal { color: #333; }   /* 일반 (검정) */
+
+        .result-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f4f7f9;
+            border-radius: 8px;
         }
 
-        .event-modal-info { padding: 0; margin: 0; }
-        .event-modal-info li {
-            list-style: none; margin-bottom: 8px; font-size: 0.95rem; color: #555;
-            display: flex; align-items: flex-start;
+        .stat-item {
+            display: flex;
+            flex-direction: column;
         }
-        .event-modal-info strong { color: #00a8ff; margin-right: 10px; white-space: nowrap; width: 35px; flex-shrink: 0; }
+
+        .stat-label { font-size: 0.85rem; color: #777; margin-bottom: 5px; }
+        .stat-value { font-size: 1.2rem; font-weight: bold; color: #00a8ff; }
+
+        .result-desc {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #555;
+            word-break: keep-all;
+        }
 
         @media (max-width: 600px) {
-            .week-row { min-height: 80px; }
-            .event-bar { font-size: 0.7rem; height: 20px; line-height: 20px; }
-            .calendar-title { font-size: 1.2rem; }
-            .btn-today-reset { font-size: 0.8rem; padding: 4px 8px; }
+            .grid-3 { gap: 10px; }
+            .stat-box input { padding: 10px; font-size: 1rem; }
+            section { padding: 25px 15px; }
         }
     </style>
 </head>
 <body>
 
     <section>
-        <h3>대구FC 경기 일정</h3>
-        <div class="calendar-container">
-            <div class="calendar-header">
-                <div class="calendar-nav-group">
-                    <button class="calendar-nav-btn" onclick="changeMonth(-1)">&#9664;</button>
-                    <div class="calendar-title" id="calendar-title" onclick="toggleDatePicker()">2026. 01</div>
-                    <button class="calendar-nav-btn" onclick="changeMonth(1)">&#9654;</button>
+        <h2>승리 요정 판독기</h2>
+        <p class="desc">
+            팀의 전체 시즌 성적(기대 빈도)과 나의 직관 성적(관측 빈도)을 비교하여,<br>
+            **카이제곱 적합도 검정(Chi-Square Test)**을 통해 나의 직관이 팀의 승률에<br>
+            유의미한 영향을 미치는지 과학적으로 분석합니다.
+        </p>
 
-                    <div class="date-picker" id="date-picker">
-                        <div class="picker-header">
-                            <span>직접 선택</span>
-                            <span class="picker-close" onclick="closeDatePicker()">&times;</span>
-                        </div>
-                        <div class="picker-body">
-                            <div class="picker-col" id="picker-years"></div>
-                            <div class="picker-col" id="picker-months"></div>
-                        </div>
-                    </div>
+        <div class="input-group">
+            <h3>팀 전체 성적 (기준 데이터)</h3>
+            <div class="grid-3">
+                <div class="stat-box">
+                    <label>승리 (W)</label>
+                    <input type="number" id="team-w" min="0" placeholder="예: 14">
                 </div>
-                <button class="btn-today-reset" onclick="goToToday()">오늘</button>
-            </div>
-
-            <div class="calendar-body" id="calendar-body">
-                <div class="weekday-row">
-                    <div class="weekday sun">일</div>
-                    <div class="weekday">월</div>
-                    <div class="weekday">화</div>
-                    <div class="weekday">수</div>
-                    <div class="weekday">목</div>
-                    <div class="weekday">금</div>
-                    <div class="weekday sat">토</div>
+                <div class="stat-box">
+                    <label>무승부 (D)</label>
+                    <input type="number" id="team-d" min="0" placeholder="예: 10">
+                </div>
+                <div class="stat-box">
+                    <label>패배 (L)</label>
+                    <input type="number" id="team-l" min="0" placeholder="예: 14">
                 </div>
             </div>
+        </div>
+
+        <div class="input-group">
+            <h3>나의 직관 성적 (관측 데이터)</h3>
+            <div class="grid-3">
+                <div class="stat-box">
+                    <label>승리 (W)</label>
+                    <input type="number" id="my-w" min="0" placeholder="예: 8">
+                </div>
+                <div class="stat-box">
+                    <label>무승부 (D)</label>
+                    <input type="number" id="my-d" min="0" placeholder="예: 2">
+                </div>
+                <div class="stat-box">
+                    <label>패배 (L)</label>
+                    <input type="number" id="my-l" min="0" placeholder="예: 1">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-calc" onclick="calculateSignificance()">통계적 유의성 검정하기</button>
+
+        <div class="result-container" id="result-container">
+            <div id="result-title" class="result-title"></div>
+            
+            <div class="result-stats">
+                <div class="stat-item">
+                    <span class="stat-label">카이제곱 통계량 (χ²)</span>
+                    <span class="stat-value" id="chi-value">0.00</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">P-Value</span>
+                    <span class="stat-value" id="p-value">0.000</span>
+                </div>
+            </div>
+
+            <p id="result-desc" class="result-desc"></p>
         </div>
     </section>
 
-    <div id="event-modal-overlay" class="event-modal-overlay" onclick="closeEventModal()">
-        <div class="event-modal" onclick="event.stopPropagation()">
-            <span class="event-modal-close" onclick="closeEventModal()">&times;</span>
-            <div id="modal-badge" class="event-modal-badge"></div>
-            <div id="modal-title" class="event-modal-title"></div>
-            <ul class="event-modal-info">
-                <li id="li-date"><strong>일시:</strong> <span id="modal-date"></span></li>
-                <li id="li-time"><strong>시각:</strong> <span id="modal-time"></span></li>
-                <li id="li-location"><strong>장소:</strong> <span id="modal-location"></span></li>
-            </ul>
-        </div>
-    </div>
-
     <script>
-        // 공휴일 계산 로직 (기존 코드와 동일하므로 생략 없이 유지)
-        function getKoreanHolidays(year) {
-            const holidays = new Set();
-            const solarHolidays = ['01-01', '03-01', '05-05', '06-06', '08-15', '10-03', '10-09', '12-25'];
-            solarHolidays.forEach(date => holidays.add(`${year}-${date}`));
+        function calculateSignificance() {
+            // 1. 값 가져오기
+            const tW = parseInt(document.getElementById('team-w').value) || 0;
+            const tD = parseInt(document.getElementById('team-d').value) || 0;
+            const tL = parseInt(document.getElementById('team-l').value) || 0;
 
-            const lunarMap = {
-                2024: { seol: '02-10', buddha: '05-15', chuseok: '09-17' },
-                2025: { seol: '01-29', buddha: '05-05', chuseok: '10-06' },
-                2026: { seol: '02-17', buddha: '05-24', chuseok: '09-25' }
-            };
+            const mW = parseInt(document.getElementById('my-w').value) || 0;
+            const mD = parseInt(document.getElementById('my-d').value) || 0;
+            const mL = parseInt(document.getElementById('my-l').value) || 0;
 
-            if (lunarMap[year]) {
-                const map = lunarMap[year];
-                const seol = new Date(`${year}-${map.seol}`);
-                [-1, 0, 1].forEach(offset => {
-                    const d = new Date(seol); d.setDate(d.getDate() + offset); holidays.add(getFmtDate(d));
-                });
-                holidays.add(`${year}-${map.buddha}`);
-                const chuseok = new Date(`${year}-${map.chuseok}`);
-                [-1, 0, 1].forEach(offset => {
-                    const d = new Date(chuseok); d.setDate(d.getDate() + offset); holidays.add(getFmtDate(d));
-                });
+            const teamTotal = tW + tD + tL;
+            const myTotal = mW + mD + mL;
+
+            // 예외 처리: 데이터 부족
+            if (teamTotal === 0) {
+                alert("팀의 전체 성적을 1경기 이상 입력해주세요.");
+                return;
             }
-            return holidays;
-        }
-
-        function getFmtDate(date) {
-            const y = date.getFullYear();
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            const d = String(date.getDate()).padStart(2, '0');
-            return `${y}-${m}-${d}`;
-        }
-
-        let allEvents = [];
-        let currentYear = new Date().getFullYear();
-        let currentMonth = new Date().getMonth() + 1;
-        const todayObj = new Date();
-        let pickerSelectedYear = currentYear;
-
-        // =========================================================================
-        // 🚀 데이터를 받아오는 핵심 부분
-        // =========================================================================
-        // 직접 FotMob을 fetch 할 수 없으므로, 두 가지 대안 중 하나를 사용해야 합니다.
-        // 대안 1: 구글 시트를 기존처럼 사용하고, 구글 시트에 K리그 일정을 수기로/자동으로 입력.
-        // 대안 2: GitHub의 다른 json 파일을 읽어오게 처리.
-        const DATA_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRBnuUvyE2CDV-hG26xCVdnt88JhQgtusdEndJwTzaI62TXPdWTNldVvua9RLkXj1s34qiM0CEcNvbr/pub?gid=305458048&single=true&output=csv";
-
-        async function fetchAndInitCalendar() {
-            try {
-                const response = await fetch(DATA_URL);
-                const data = await response.text();
-                const rows = data.split("\n").map(row => row.trim()).filter(row => row.length > 0);
-
-                allEvents = rows.slice(1).map(row => {
-                    const cols = row.split(",");
-                    if (cols.length < 7) return null;
-
-                    return {
-                        name: cols[0].trim(),         // 예: 대구FC vs 전북 현대
-                        startDate: cols[1].trim(),    // 예: 2026-04-05
-                        startTime: cols[2].trim(),    // 예: 14:00
-                        endDate: cols[3].trim() || cols[1].trim(), 
-                        endTime: cols[4].trim(),      
-                        location: cols[5].trim(),     // 예: DGB대구은행파크
-                        type: cols[6].trim()          // 예: K리그1
-                    };
-                }).filter(event => event !== null);
-
-                renderCalendar(currentYear, currentMonth);
-
-            } catch (error) {
-                console.error("일정을 불러오는 데 실패했습니다:", error);
-                document.getElementById('calendar-title').innerText = "일정 로딩 실패";
-            }
-        }
-
-        function renderCalendar(year, month) {
-            const calendarBody = document.getElementById('calendar-body');
-            const title = document.getElementById('calendar-title');
-
-            title.innerText = `${year}. ${String(month).padStart(2, '0')}`;
-
-            const oldRows = calendarBody.querySelectorAll('.week-row');
-            oldRows.forEach(r => r.remove());
-
-            const holidaySet = getKoreanHolidays(year);
-            const firstDateOfMonth = new Date(year, month - 1, 1);
-            const lastDateOfMonth = new Date(year, month, 0);
-
-            const startDate = new Date(firstDateOfMonth);
-            startDate.setDate(startDate.getDate() - firstDateOfMonth.getDay());
-
-            const endDate = new Date(lastDateOfMonth);
-            if (endDate.getDay() !== 6) {
-                endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
+            if (myTotal === 0) {
+                alert("직관 성적을 1경기 이상 입력해주세요.");
+                return;
             }
 
-            let currentDate = new Date(startDate);
+            // 2. 확률 분포 계산 (기대 비율)
+            const pW = tW / teamTotal;
+            const pD = tD / teamTotal;
+            const pL = tL / teamTotal;
 
-            while (currentDate <= endDate) {
-                const weekRow = document.createElement('div');
-                weekRow.className = 'week-row';
+            // 3. 기대 빈도(Expected Frequencies) 계산
+            // ZeroDivision Error 방지를 위해 최소값 세팅
+            const eW = Math.max(pW * myTotal, 0.0001); 
+            const eD = Math.max(pD * myTotal, 0.0001);
+            const eL = Math.max(pL * myTotal, 0.0001);
 
-                const dayBgLayer = document.createElement('div');
-                dayBgLayer.className = 'day-bg-layer';
+            // 4. 카이제곱 통계량 (Chi-Square Statistic) 계산
+            // 공식: Σ(O - E)² / E
+            const chiSquare = (Math.pow(mW - eW, 2) / eW) +
+                              (Math.pow(mD - eD, 2) / eD) +
+                              (Math.pow(mL - eL, 2) / eL);
 
-                const eventsLayer = document.createElement('div');
-                eventsLayer.className = 'events-layer';
+            // 5. P-Value 계산
+            // 범주가 3개(승,무,패)이므로 자유도(df) = 2. 
+            // 자유도가 2인 카이제곱 분포의 누적 분포 함수(CDF)는 1 - exp(-x/2)로 도출됩니다.
+            // 따라서 p-value = 1 - CDF = exp(-x/2)
+            const pValue = Math.exp(-chiSquare / 2);
 
-                let weekDates = [];
+            // 6. 결과 텍스트 로직 판별
+            const alpha = 0.05; // 유의수준 5%
+            let titleText = "";
+            let titleClass = "";
+            let descText = "";
 
-                for (let i = 0; i < 7; i++) {
-                    const d = new Date(currentDate);
-                    weekDates.push(d);
+            const teamWinRate = (pW * 100).toFixed(1);
+            const myWinRate = ((mW / myTotal) * 100).toFixed(1);
 
-                    const bgCell = document.createElement('div');
-                    bgCell.className = 'day-cell-bg';
-
-                    if (d.getMonth() + 1 !== month) bgCell.classList.add('other-month');
-                    if (d.getDay() === 0) bgCell.classList.add('sun');
-                    if (d.getDay() === 6) bgCell.classList.add('sat');
-
-                    const dateStr = getFmtDate(d);
-                    if (holidaySet.has(dateStr)) bgCell.classList.add('holiday');
-
-                    if (d.getFullYear() === todayObj.getFullYear() && d.getMonth() === todayObj.getMonth() && d.getDate() === todayObj.getDate()) {
-                        bgCell.classList.add('today');
-                    }
-
-                    const numSpan = document.createElement('span');
-                    numSpan.className = 'day-number';
-                    numSpan.innerText = d.getDate();
-
-                    bgCell.appendChild(numSpan);
-                    dayBgLayer.appendChild(bgCell);
-
-                    currentDate.setDate(currentDate.getDate() + 1);
+            if (pValue < alpha) {
+                // 통계적으로 유의미한 차이가 있음 (H0 기각)
+                if ((mW / myTotal) > pW) {
+                    titleText = "🎉 당신은 공식 '승리 요정' 입니다!";
+                    titleClass = "fairy";
+                    descText = `팀의 기본 승률(${teamWinRate}%)에 비해 당신의 직관 승률(${myWinRate}%)이 비정상적으로 높습니다. 이는 단순한 우연(p-value < 0.05)으로 보기 어려우며, 당신의 직관이 팀에 긍정적인 통계적 외생변수로 작용하고 있음을 의미합니다! 매 경기 직관을 권장합니다.`;
+                } else {
+                    titleText = "🌧️ 앗... 혹시 '직관 필패' 이신가요?";
+                    titleClass = "curse";
+                    descText = `팀의 기본 승률(${teamWinRate}%)에 비해 당신의 직관 승률(${myWinRate}%)이 유의미하게 낮습니다(p-value < 0.05). 안타깝지만 통계는 당신이 경기장에 갈 때마다 팀의 기대 승점이 낮아진다고 가리키고 있습니다. 집에서 편안하게 중계를 보시는 것은 어떨까요?`;
                 }
-
-                const weekStart = weekDates[0].getTime();
-                const weekEnd = weekDates[6].getTime();
-
-                let weekEvents = allEvents.filter(evt => {
-                    const sTime = new Date(evt.startDate).getTime();
-                    const eTime = new Date(evt.endDate).getTime();
-                    return sTime <= weekEnd && eTime >= weekStart;
-                }).map(evt => {
-                    const sDate = new Date(evt.startDate);
-                    const eDate = new Date(evt.endDate);
-                    let startIndex = sDate > weekDates[0] ? Math.floor((sDate - weekDates[0]) / (1000 * 60 * 60 * 24)) : 0;
-                    let endIndex = eDate < weekDates[6] ? 6 - Math.floor((weekDates[6] - eDate) / (1000 * 60 * 60 * 24)) : 6;
-
-                    return { original: evt, startIndex, endIndex, span: endIndex - startIndex + 1, sDate, eDate, duration: eDate - sDate };
-                });
-
-                weekEvents.sort((a, b) => {
-                    if (a.startIndex !== b.startIndex) return a.startIndex - b.startIndex;
-                    return b.duration - a.duration;
-                });
-
-                let slots = [];
-                weekEvents.forEach(evt => {
-                    let row = 0;
-                    while (true) {
-                        if (!slots[row]) slots[row] = Array(7).fill(false);
-                        let isClear = true;
-                        for (let d = evt.startIndex; d <= evt.endIndex; d++) {
-                            if (slots[row][d]) { isClear = false; break; }
-                        }
-                        if (isClear) {
-                            for (let d = evt.startIndex; d <= evt.endIndex; d++) slots[row][d] = true;
-                            evt.row = row; break;
-                        }
-                        row++;
-                    }
-                });
-
-                const maxRow = slots.length;
-                if (maxRow > 0) {
-                    const contentH = 30 + (maxRow * 24) + 10;
-                    if (contentH > 100) weekRow.style.minHeight = contentH + 'px';
-                }
-
-                weekEvents.forEach(evt => {
-                    const bar = document.createElement('div');
-                    // 세징야 출전 예상 등의 커스텀 이름 적용 가능
-                    bar.innerText = evt.original.name; 
-                    bar.className = 'event-bar';
-
-                    // 경기 타입별 색상 로직 적용
-                    if (evt.original.type.includes('K리그1') || evt.original.type.includes('K리그')) bar.classList.add('kleague');
-                    else if (evt.original.type.includes('코리아컵') || evt.original.type.includes('FA컵')) bar.classList.add('facup');
-                    else if (evt.original.type.includes('ACL')) bar.classList.add('acl');
-                    else bar.classList.add('etc');
-
-                    bar.style.top = (evt.row * 24) + 'px';
-
-                    const ONE_DAY_PCT = 14.2857;
-                    const GAP = 0.5;
-
-                    let leftPct = evt.startIndex * ONE_DAY_PCT;
-                    let widthPct = evt.span * ONE_DAY_PCT;
-
-                    if (evt.sDate >= weekDates[0]) { leftPct += GAP; widthPct -= GAP; }
-                    if (evt.eDate <= weekDates[6]) { widthPct -= GAP; }
-
-                    bar.style.left = leftPct + '%';
-                    bar.style.width = widthPct + '%';
-
-                    bar.onclick = (e) => { e.stopPropagation(); openEventModal(evt.original); };
-                    eventsLayer.appendChild(bar);
-                });
-
-                weekRow.appendChild(dayBgLayer);
-                weekRow.appendChild(eventsLayer);
-                calendarBody.appendChild(weekRow);
-            }
-        }
-
-        function openEventModal(evt) {
-            const modal = document.getElementById('event-modal-overlay');
-            const badge = document.getElementById('modal-badge');
-            
-            badge.innerText = evt.type || "경기";
-            badge.className = "event-modal-badge";
-            
-            if (evt.type.includes('K리그')) badge.style.backgroundColor = "#00a8ff";
-            else if (evt.type.includes('컵')) badge.style.backgroundColor = "#27ae60";
-            else badge.style.backgroundColor = "#7f8c8d";
-
-            document.getElementById('modal-title').innerText = evt.name;
-            document.getElementById('modal-date').innerText = formatModalDate(evt.startDate);
-            
-            const timeLi = document.getElementById('li-time');
-            if(evt.startTime) {
-                timeLi.style.display = "flex";
-                document.getElementById('modal-time').innerText = evt.startTime;
             } else {
-                timeLi.style.display = "none";
+                // 통계적으로 유의미한 차이가 없음 (H0 기각 실패)
+                titleText = "📊 당신의 직관은 매우 '정규분포' 스럽습니다.";
+                titleClass = "normal";
+                descText = `팀의 성적 흐름을 그대로 따라가고 있습니다. 직관 성적과 팀의 기본 승률 간의 차이가 통계적으로 유의미하지 않습니다 (p-value > 0.05). 당신이 직관을 가든 안 가든, 팀은 본연의 실력대로 결과를 내고 있습니다.`;
             }
 
-            const locLi = document.getElementById('li-location');
-            if (evt.location) {
-                locLi.style.display = "flex";
-                document.getElementById('modal-location').innerText = evt.location;
-            } else {
-                locLi.style.display = "none";
-            }
+            // 7. UI 업데이트
+            const resultContainer = document.getElementById('result-container');
+            const titleEl = document.getElementById('result-title');
+            
+            titleEl.innerText = titleText;
+            titleEl.className = `result-title ${titleClass}`;
+            
+            document.getElementById('chi-value').innerText = chiSquare.toFixed(2);
+            document.getElementById('p-value').innerText = pValue.toFixed(4);
+            document.getElementById('result-desc').innerText = descText;
 
-            modal.style.display = "flex";
+            resultContainer.style.display = 'block';
         }
-
-        function closeEventModal() { document.getElementById('event-modal-overlay').style.display = "none"; }
-        function formatModalDate(dateStr) {
-            if (!dateStr) return "";
-            const [y, m, d] = dateStr.split('-');
-            const date = new Date(y, m - 1, d);
-            const days = ['일', '월', '화', '수', '목', '금', '토'];
-            return `${y}. ${m}. ${d}. (${days[date.getDay()]})`;
-        }
-
-        function goToToday() {
-            currentYear = todayObj.getFullYear(); currentMonth = todayObj.getMonth() + 1;
-            renderCalendar(currentYear, currentMonth);
-        }
-
-        function changeMonth(step) {
-            currentMonth += step;
-            if (currentMonth < 1) { currentMonth = 12; currentYear--; } 
-            else if (currentMonth > 12) { currentMonth = 1; currentYear++; }
-            renderCalendar(currentYear, currentMonth);
-        }
-
-        function toggleDatePicker(e) {
-            const picker = document.getElementById('date-picker');
-            if (e) e.stopPropagation();
-            if (picker.classList.contains('active')) closeDatePicker();
-            else { pickerSelectedYear = currentYear; renderPickerContent(); picker.classList.add('active'); document.addEventListener('click', closeDatePickerOutside); }
-        }
-
-        function closeDatePicker() { document.getElementById('date-picker').classList.remove('active'); document.removeEventListener('click', closeDatePickerOutside); }
-        function closeDatePickerOutside(event) {
-            const picker = document.getElementById('date-picker');
-            const title = document.getElementById('calendar-title');
-            if (!picker.contains(event.target) && !title.contains(event.target)) closeDatePicker();
-        }
-
-        function renderPickerContent() {
-            const yearCol = document.getElementById('picker-years');
-            const monthCol = document.getElementById('picker-months');
-            yearCol.innerHTML = ''; monthCol.innerHTML = '';
-
-            for (let y = 2024; y <= 2030; y++) {
-                const div = document.createElement('div');
-                div.className = 'picker-item'; div.innerText = y + '년';
-                if (y === pickerSelectedYear) div.classList.add('selected');
-                div.onclick = (e) => { e.stopPropagation(); pickerSelectedYear = y; renderPickerContent(); };
-                yearCol.appendChild(div);
-            }
-
-            for (let m = 1; m <= 12; m++) {
-                const div = document.createElement('div');
-                div.className = 'picker-item'; div.innerText = m + '월';
-                if (pickerSelectedYear === currentYear && m === currentMonth) div.classList.add('selected');
-                div.onclick = (e) => {
-                    e.stopPropagation(); currentYear = pickerSelectedYear; currentMonth = m;
-                    renderCalendar(currentYear, currentMonth); closeDatePicker();
-                };
-                monthCol.appendChild(div);
-            }
-        }
-
-        fetchAndInitCalendar();
     </script>
+
 </body>
 </html>
