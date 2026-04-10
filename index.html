@@ -3,343 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>승리 요정 판독기 - 직관 성적 유의성 검정</title>
+    <title>프랑스어 암호 제작기</title>
     <style>
-        /* ============================ */
-        /* [1] 기본 설정 및 레이아웃 */
-        /* ============================ */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; 
-            padding: 40px 20px; 
-            background-color: #f4f7f9; 
-            color: #333;
-        }
-
-        section {
-            max-width: 800px; 
-            width: 100%;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,168,255,0.08);
-        }
-
-        /* 메인 컬러: 선명한 하늘색 (#00a8ff) */
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            color: #00a8ff; 
-            text-align: center;
-            font-weight: 800;
-        }
-
-        p.desc {
-            text-align: center;
-            color: #666;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-            word-break: keep-all;
-        }
-
-        /* ============================ */
-        /* [2] 입력 폼 스타일 */
-        /* ============================ */
-        .input-group {
-            margin-bottom: 2rem;
-            padding: 20px;
-            background: #f8fbff;
-            border-radius: 12px;
-            border: 1px solid #e1f0fa;
-        }
-
-        .input-group h3 {
-            font-size: 1.2rem;
-            color: #333;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-group h3::before {
-            content: '';
-            display: inline-block;
-            width: 4px;
-            height: 18px;
-            background-color: #00a8ff;
-            margin-right: 8px;
-            border-radius: 2px;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-        }
-
-        .stat-box {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-box label {
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: #555;
-            margin-bottom: 8px;
-        }
-
-        .stat-box input {
-            padding: 12px;
-            font-size: 1.1rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            text-align: center;
-            transition: border-color 0.2s;
-        }
-
-        .stat-box input:focus {
-            outline: none;
-            border-color: #00a8ff;
-        }
-
-        /* 버튼 */
-        .btn-calc {
-            display: block;
-            width: 100%;
-            padding: 16px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: white;
-            background-color: #00a8ff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 10px rgba(0,168,255,0.3);
-        }
-
-        .btn-calc:hover {
-            background-color: #0097e6;
-            transform: translateY(-2px);
-        }
-
-        /* ============================ */
-        /* [3] 결과 출력 스타일 */
-        /* ============================ */
-        .result-container {
-            display: none;
-            margin-top: 2rem;
-            padding: 30px;
-            background: white;
-            border: 2px solid #00a8ff;
-            border-radius: 12px;
-            text-align: center;
-            animation: slideDown 0.4s ease-out forwards;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .result-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .result-title.fairy { color: #e15f41; } /* 승리요정 (주황/빨강) */
-        .result-title.curse { color: #546de5; } /* 패배요정 (파랑) */
-        .result-title.normal { color: #333; }   /* 일반 (검정) */
-
-        .result-stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 20px 0;
-            padding: 15px;
-            background: #f4f7f9;
-            border-radius: 8px;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-label { font-size: 0.85rem; color: #777; margin-bottom: 5px; }
-        .stat-value { font-size: 1.2rem; font-weight: bold; color: #00a8ff; }
-
-        .result-desc {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: #555;
-            word-break: keep-all;
-        }
-
-        @media (max-width: 600px) {
-            .grid-3 { gap: 10px; }
-            .stat-box input { padding: 10px; font-size: 1rem; }
-            section { padding: 25px 15px; }
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 1.5rem; font-size: 1.5rem; }
+        .input-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: #34495e; }
+        input[type="number"], textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        textarea { height: 120px; resize: none; margin-bottom: 1rem; }
+        .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+        button { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s; font-size: 1rem; }
+        .btn-encrypt { background-color: #3498db; color: white; }
+        .btn-encrypt:hover { background-color: #2980b9; }
+        .btn-decrypt { background-color: #2ecc71; color: white; }
+        .btn-decrypt:hover { background-color: #27ae60; }
+        .result-area { background-color: #f9f9f9; border: 1px dashed #cbd5e0; padding: 10px; border-radius: 8px; min-height: 50px; word-break: break-all; color: #2d3748; }
     </style>
 </head>
 <body>
 
-    <section>
-        <h2>승리 요정 판독기</h2>
-        <p class="desc">
-            팀의 전체 시즌 성적(기대 빈도)과 나의 직관 성적(관측 빈도)을 비교하여,<br>
-            **카이제곱 적합도 검정(Chi-Square Test)**을 통해 나의 직관이 팀의 승률에<br>
-            유의미한 영향을 미치는지 과학적으로 분석합니다.
-        </p>
+<div class="container">
+    <h1>🇫🇷 Chiffrement Français</h1>
+    
+    <div class="input-group">
+        <label for="key">난수 (암호 키)</label>
+        <input type="number" id="key" placeholder="숫자를 입력하세요 (예: 12345)" value="1">
+    </div>
 
-        <div class="input-group">
-            <h3>팀 전체 성적 (기준 데이터)</h3>
-            <div class="grid-3">
-                <div class="stat-box">
-                    <label>승리 (W)</label>
-                    <input type="number" id="team-w" min="0" placeholder="예: 14">
-                </div>
-                <div class="stat-box">
-                    <label>무승부 (D)</label>
-                    <input type="number" id="team-d" min="0" placeholder="예: 10">
-                </div>
-                <div class="stat-box">
-                    <label>패배 (L)</label>
-                    <input type="number" id="team-l" min="0" placeholder="예: 14">
-                </div>
-            </div>
-        </div>
+    <div class="input-group">
+        <label for="inputText">텍스트 입력</label>
+        <textarea id="inputText" placeholder="암호화하거나 해독할 프랑스어 문장을 입력하세요..."></textarea>
+    </div>
 
-        <div class="input-group">
-            <h3>나의 직관 성적 (관측 데이터)</h3>
-            <div class="grid-3">
-                <div class="stat-box">
-                    <label>승리 (W)</label>
-                    <input type="number" id="my-w" min="0" placeholder="예: 8">
-                </div>
-                <div class="stat-box">
-                    <label>무승부 (D)</label>
-                    <input type="number" id="my-d" min="0" placeholder="예: 2">
-                </div>
-                <div class="stat-box">
-                    <label>패배 (L)</label>
-                    <input type="number" id="my-l" min="0" placeholder="예: 1">
-                </div>
-            </div>
-        </div>
+    <div class="buttons">
+        <button class="btn-encrypt" onclick="process(true)">암호 제작 (Encrypt)</button>
+        <button class="btn-decrypt" onclick="process(false)">암호 해독 (Decrypt)</button>
+    </div>
 
-        <button class="btn-calc" onclick="calculateSignificance()">통계적 유의성 검정하기</button>
+    <label>결과</label>
+    <textarea id="outputText" readonly placeholder="결과가 여기에 표시됩니다..."></textarea>
+</div>
 
-        <div class="result-container" id="result-container">
-            <div id="result-title" class="result-title"></div>
-            
-            <div class="result-stats">
-                <div class="stat-item">
-                    <span class="stat-label">카이제곱 통계량 (χ²)</span>
-                    <span class="stat-value" id="chi-value">0.00</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">P-Value</span>
-                    <span class="stat-value" id="p-value">0.000</span>
-                </div>
-            </div>
+<script>
+    // 프랑스어 알파벳 + 악상 기호 + 어퍼스트로피
+    const baseChars = "abcdefghijklmnopqrstuvwxyzàâéèêëîïôûùç'".split("");
+    const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÂÉÈÊËÎÏÔÛÙÇ".split("");
 
-            <p id="result-desc" class="result-desc"></p>
-        </div>
-    </section>
-
-    <script>
-        function calculateSignificance() {
-            // 1. 값 가져오기
-            const tW = parseInt(document.getElementById('team-w').value) || 0;
-            const tD = parseInt(document.getElementById('team-d').value) || 0;
-            const tL = parseInt(document.getElementById('team-l').value) || 0;
-
-            const mW = parseInt(document.getElementById('my-w').value) || 0;
-            const mD = parseInt(document.getElementById('my-d').value) || 0;
-            const mL = parseInt(document.getElementById('my-l').value) || 0;
-
-            const teamTotal = tW + tD + tL;
-            const myTotal = mW + mD + mL;
-
-            // 예외 처리: 데이터 부족
-            if (teamTotal === 0) {
-                alert("팀의 전체 성적을 1경기 이상 입력해주세요.");
-                return;
-            }
-            if (myTotal === 0) {
-                alert("직관 성적을 1경기 이상 입력해주세요.");
-                return;
-            }
-
-            // 2. 확률 분포 계산 (기대 비율)
-            const pW = tW / teamTotal;
-            const pD = tD / teamTotal;
-            const pL = tL / teamTotal;
-
-            // 3. 기대 빈도(Expected Frequencies) 계산
-            // ZeroDivision Error 방지를 위해 최소값 세팅
-            const eW = Math.max(pW * myTotal, 0.0001); 
-            const eD = Math.max(pD * myTotal, 0.0001);
-            const eL = Math.max(pL * myTotal, 0.0001);
-
-            // 4. 카이제곱 통계량 (Chi-Square Statistic) 계산
-            // 공식: Σ(O - E)² / E
-            const chiSquare = (Math.pow(mW - eW, 2) / eW) +
-                              (Math.pow(mD - eD, 2) / eD) +
-                              (Math.pow(mL - eL, 2) / eL);
-
-            // 5. P-Value 계산
-            // 범주가 3개(승,무,패)이므로 자유도(df) = 2. 
-            // 자유도가 2인 카이제곱 분포의 누적 분포 함수(CDF)는 1 - exp(-x/2)로 도출됩니다.
-            // 따라서 p-value = 1 - CDF = exp(-x/2)
-            const pValue = Math.exp(-chiSquare / 2);
-
-            // 6. 결과 텍스트 로직 판별
-            const alpha = 0.05; // 유의수준 5%
-            let titleText = "";
-            let titleClass = "";
-            let descText = "";
-
-            const teamWinRate = (pW * 100).toFixed(1);
-            const myWinRate = ((mW / myTotal) * 100).toFixed(1);
-
-            if (pValue < alpha) {
-                // 통계적으로 유의미한 차이가 있음 (H0 기각)
-                if ((mW / myTotal) > pW) {
-                    titleText = "🎉 당신은 공식 '승리 요정' 입니다!";
-                    titleClass = "fairy";
-                    descText = `팀의 기본 승률(${teamWinRate}%)에 비해 당신의 직관 승률(${myWinRate}%)이 비정상적으로 높습니다. 이는 단순한 우연(p-value < 0.05)으로 보기 어려우며, 당신의 직관이 팀에 긍정적인 통계적 외생변수로 작용하고 있음을 의미합니다! 매 경기 직관을 권장합니다.`;
-                } else {
-                    titleText = "🌧️ 앗... 혹시 '직관 필패' 이신가요?";
-                    titleClass = "curse";
-                    descText = `팀의 기본 승률(${teamWinRate}%)에 비해 당신의 직관 승률(${myWinRate}%)이 유의미하게 낮습니다(p-value < 0.05). 안타깝지만 통계는 당신이 경기장에 갈 때마다 팀의 기대 승점이 낮아진다고 가리키고 있습니다. 집에서 편안하게 중계를 보시는 것은 어떨까요?`;
-                }
-            } else {
-                // 통계적으로 유의미한 차이가 없음 (H0 기각 실패)
-                titleText = "📊 당신의 직관은 매우 '정규분포' 스럽습니다.";
-                titleClass = "normal";
-                descText = `팀의 성적 흐름을 그대로 따라가고 있습니다. 직관 성적과 팀의 기본 승률 간의 차이가 통계적으로 유의미하지 않습니다 (p-value > 0.05). 당신이 직관을 가든 안 가든, 팀은 본연의 실력대로 결과를 내고 있습니다.`;
-            }
-
-            // 7. UI 업데이트
-            const resultContainer = document.getElementById('result-container');
-            const titleEl = document.getElementById('result-title');
-            
-            titleEl.innerText = titleText;
-            titleEl.className = `result-title ${titleClass}`;
-            
-            document.getElementById('chi-value').innerText = chiSquare.toFixed(2);
-            document.getElementById('p-value').innerText = pValue.toFixed(4);
-            document.getElementById('result-desc').innerText = descText;
-
-            resultContainer.style.display = 'block';
+    // 난수를 이용한 시드 기반 셔플 함수
+    function seededShuffle(array, seed) {
+        let m = array.length, t, i;
+        const copy = [...array];
+        while (m) {
+            i = Math.floor(random(seed++) * m--);
+            t = copy[m];
+            copy[m] = copy[i];
+            copy[i] = t;
         }
-    </script>
+        return copy;
+    }
+
+    // 간단한 의사 난수 생성기
+    function random(seed) {
+        var x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+
+    function process(isEncrypt) {
+        const seed = parseInt(document.getElementById('key').value) || 0;
+        const text = document.getElementById('inputText').value;
+        
+        // 소문자와 대문자 각각 셔플된 맵 생성
+        const shuffledBase = seededShuffle(baseChars, seed);
+        const shuffledUpper = seededShuffle(upperChars, seed);
+
+        let result = "";
+
+        for (let char of text) {
+            if (baseChars.includes(char)) {
+                const index = isEncrypt ? baseChars.indexOf(char) : shuffledBase.indexOf(char);
+                result += isEncrypt ? shuffledBase[index] : baseChars[index];
+            } else if (upperChars.includes(char)) {
+                const index = isEncrypt ? upperChars.indexOf(char) : shuffledUpper.indexOf(char);
+                result += isEncrypt ? shuffledUpper[index] : upperChars[index];
+            } else {
+                // 공백, 숫자, 문장 부호 등은 그대로 유지
+                result += char;
+            }
+        }
+
+        document.getElementById('outputText').value = result;
+    }
+</script>
 
 </body>
 </html>
